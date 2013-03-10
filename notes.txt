@@ -1,4 +1,0 @@
-
-
-    This tool was written by me (Steve Hollasch) before I joined Microsoft. I
-    later submitted it to Microsoft's Toolbox collection.
