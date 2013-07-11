@@ -1,5 +1,5 @@
 
-    hex: A hexadecimal dump for the Windows command line
+hex: A hexadecimal dump for the Windows command line
 
 
     DESCRIPTION
@@ -16,5 +16,10 @@
     Visual Studio 'nmake' command. Run 'nmake all' to build hex.exe.
 
 
-    --
-    Steve Hollasch <steve@hollasch.net>  /  2013 March 9
+    TO DO
+    - Convert project to Visual Studio
+    - Add grouping options for 64-bit and 128-bit words
+    ? Unicode output
+
+--
+Steve Hollasch <steve@hollasch.net>  /  2013 March 9
