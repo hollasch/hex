@@ -3,5 +3,8 @@
 *.exe
 *.ilk
 *.obj
+*.opensdf
+*.sdf
 *.suo
 *.pdb
+*.user
