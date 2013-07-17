@@ -17,9 +17,8 @@ hex: A hexadecimal dump for the Windows command line
 
 
     TO DO
-    - Convert project to Visual Studio
     - Add grouping options for 64-bit and 128-bit words
     ? Unicode output
 
 --
-Steve Hollasch <steve@hollasch.net>  /  2013 March 9
+Steve Hollasch <steve@hollasch.net>  /  2013 July 17
