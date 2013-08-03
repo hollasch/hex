@@ -17,8 +17,7 @@ hex: A hexadecimal dump for the Windows command line
 
 
     TO DO
-    - Add grouping options for 64-bit and 128-bit words
-    ? Unicode output
+    - Unicode output
 
 --
-Steve Hollasch <steve@hollasch.net>  /  2013 July 17
+Steve Hollasch <steve@hollasch.net>  /  2013 Aug 3
