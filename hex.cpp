@@ -1,9 +1,11 @@
-/*******************************************************************************
-
-    This tool reads data from the standard input stream and prints to the
-standard output stream the hexadecimal and ASCII codes for each byte.
-
-*******************************************************************************/
+//**************************************************************************************************
+// 
+// hex
+//
+// This tool reads data from the standard input stream and prints to the standard output stream the
+// hexadecimal and ASCII codes for each byte.
+//
+//**************************************************************************************************
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,10 +15,10 @@ standard output stream the hexadecimal and ASCII codes for each byte.
 
 static char usage[] =
 "\n"
-"hex  /  2001.03.06  /  Steve Hollasch\n"
+"hex  /  2013.08.03  /  Steve Hollasch\n"
 "\n"
 "hex:      Dumps the contents of a file in hex and ASCII.\n"
-"usage:    hex [-bwlc] [-s <start>] [-e <end>] [file] ... [file]\n"
+"usage:    hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]\n"
 "\n"
 "    This tool dumps the contents of a file in hexadecimal and ascii.\n"
 "    If no filenames are supplied, hex reads from the standard input stream.\n"
@@ -26,18 +28,20 @@ static char usage[] =
 "    -b  Display output grouped by bytes.\n"
 "    -w  Display output grouped by words (16-bits).\n"
 "    -l  Display output grouped by longwords (32-bits).\n"
-"\n"
-"    -s  Start the dump at the given location (octal, decimal or hex).\n"
-"    -e  End the dump at the given location (octal, decimal or hex).\n"
+"    -q  Display output grouped by quadwords (64-bits).\n"
+"    -o  Display output grouped by octwords (128-bits).\n"
 "\n"
 "    -c  Compact duplicate lines.  Blocks of identical data are represented\n"
 "        by the first line of data followed by a single line of \"====\".\n"
+"\n"
+"    -s  Start the dump at the given location (octal, decimal or hex).\n"
+"    -e  End the dump at the given location (octal, decimal or hex).\n"
 "\n";
 
 
    /***  Type Definitions  ***/
 
-enum GroupType { Group_Byte, Group_Word, Group_Long };
+enum GroupType { Group_Byte, Group_Word, Group_Long, Group_Quad, Group_Oct };
 
 
    /***  Local Function Declarations  ***/
@@ -49,17 +53,20 @@ long   ReadPositiveLong (char *string);
 
    /***  Data Tables  ***/
 
-char b_template[] =
-"XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA CCCCCCCCCCCCCCCC\n";
-short b_locs[] = { 0,3,6,9, 13,16,19,22, 26,29,32,35, 39,42,45,48, 54, 63 };
+char  b_template[] = "XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
+short b_locs[]     = { 0,3,6,9, 13,16,19,22, 26,29,32,35, 39,42,45,48, 54, 64 };
 
-char w_template[] =
-"XXXX XXXX  XXXX XXXX  XXXX XXXX  XXXX XXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short w_locs[] = { 0,2,5,7, 11,13,16,18, 22,24,27,29, 33,35,38,40, 46, 57 };
+char  w_template[] = "XXXX XXXX  XXXX XXXX  XXXX XXXX  XXXX XXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
+short w_locs[]     = { 0,2,5,7, 11,13,16,18, 22,24,27,29, 33,35,38,40, 46, 56 };
 
-char l_template[] =
-"XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short l_locs[] = { 0,2,4,6, 9,11,13,15, 18,20,22,24, 27,29,31,33, 39, 49};
+char  l_template[] = "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
+short l_locs[]     = { 0,2,4,6, 9,11,13,15, 18,20,22,24, 27,29,31,33, 39, 49};
+
+char  q_template[] = "XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
+short q_locs[]     = { 0,2,4,6,8,10,12,14, 17,19,21,23,25,27,29,31, 37, 47 };
+
+char  o_template[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
+short o_locs[]     = { 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30, 36, 46 };
 
 char hexdig[] = "0123456789abcdef";
 
@@ -77,6 +84,7 @@ bool      compact = false;         // Compact Duplicate Lines
 
 
 /*****************************************************************************
+Helper Functions
 *****************************************************************************/
 
 inline int print (char *string)
@@ -115,10 +123,13 @@ int main (int argc, char *argv[])
 
         default:
         case Group_Long:  ptemplate = l_template;  locs = l_locs;  break;
+
+        case Group_Quad:  ptemplate = q_template;  locs = q_locs;  break;
+        case Group_Oct:   ptemplate = o_template;  locs = o_locs;  break;
     }
 
-    /* If no filenames were given, dump the standard input stream, otherwise
-       dump each of the named files.  */
+    // If no filenames were given, dump the standard input stream, otherwise
+    // dump each of the named files.
 
     if (fcount == 0)
         Dump (stdin, datastart, dataend);
@@ -193,6 +204,8 @@ short ProcessArgs (int argc, char *argv[])
                 case 'b':   grouping = Group_Byte;  break;
                 case 'l':   grouping = Group_Long;  break;
                 case 'w':   grouping = Group_Word;  break;
+                case 'q':   grouping = Group_Quad;  break;
+                case 'o':   grouping = Group_Oct;   break;
 
                 case 'c':   compact  = true;        break;
 
