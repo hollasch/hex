@@ -1,5 +1,5 @@
 //**************************************************************************************************
-// 
+//
 // hex
 //
 // This tool reads data from the standard input stream and prints to the standard output stream the
@@ -22,7 +22,7 @@ static char usage[] =
 "\n"
 "    This tool dumps the contents of a file in hexadecimal and ascii.\n"
 "    If no filenames are supplied, hex reads from the standard input stream.\n"
-"    To specify hex, prefix with 0x, to specify octal, prefix with 0.  For\n"
+"    To specify hex, prefix with 0x, to specify octal, prefix with 0. For\n"
 "    example, 200 = 0310 = 0xc8.\n"
 "\n"
 "    -b  Display output grouped by bytes.\n"
@@ -31,7 +31,7 @@ static char usage[] =
 "    -q  Display output grouped by quadwords (64-bits).\n"
 "    -o  Display output grouped by octwords (128-bits).\n"
 "\n"
-"    -c  Compact duplicate lines.  Blocks of identical data are represented\n"
+"    -c  Compact duplicate lines. Blocks of identical data are represented\n"
 "        by the first line of data followed by a single line of \"====\".\n"
 "\n"
 "    -s  Start the dump at the given location (octal, decimal or hex).\n"
@@ -162,7 +162,7 @@ int main (int argc, char *argv[])
 
 
 /*****************************************************************************
-This routine processes the command-line arguments.  If all goes well, the
+This routine processes the command-line arguments. If all goes well, the
 function returns 1, else it returns 0.
 *****************************************************************************/
 
@@ -174,7 +174,7 @@ short ProcessArgs (int argc, char *argv[])
     {
         char *swptr;    // Switch Pointer
 
-        /* First check to see if the user is prompting for information.  Note
+        /* First check to see if the user is prompting for information. Note
            that I also check forward-slash options for PC folks. */
 
         if (  (0 == strcmp(argv[argi], "-?"))
@@ -316,7 +316,7 @@ void  Dump  (FILE *file, long datastart, long dataend)
         if (  compact && (addr != datastart) && (nbytes == 0x10)
            && (0 == memcmp (lastbuff, buff, sizeof(buff)))
            )
-        {  
+        {
             // Print the redundant line marker, but only once per block.
 
             if (!redblock)
@@ -328,10 +328,10 @@ void  Dump  (FILE *file, long datastart, long dataend)
         }
 
         /* The following conditional is true when the input ends in the middle
-           of a redundant block.  In this situation, we force the output of
-           the last line of the input.  Note that for redblock to be true, the
+           of a redundant block. In this situation, we force the output of
+           the last line of the input. Note that for redblock to be true, the
            previous number of bytes read in had to be 0x10, so we know that the
-           number of bytes in the last buffer is 0x10.  We also decrement the
+           number of bytes in the last buffer is 0x10. We also decrement the
            address to adjust for having skipped past the last block. */
 
         if (!nbytes && redblock)

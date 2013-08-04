@@ -7,15 +7,14 @@ Name
 
 Synopsis
 
-    hex [-?bwlv] [-s] [-e] [file] ... [file]
+    hex [-?] [-b|w|l|q|o] [-c] [-s<start>] [-e<end>] [file] ... [file]
 
 Description
 
-    hex is a filter that reads data from either standard input (if no
-    filenames are supplied) or from the list of files, and dumps the data
-    in hexadecimal and ASCII. Note that options may be prefixed with either
-    a '-' or with a '/' character, and that you can put spaces between the
-    switch letter and the argument (e.g. "-e200" or "-e 200").
+    hex is a filter that reads data from either standard input (if no filenames are supplied)
+    or from the list of files, and dumps the data in hexadecimal and ASCII. Note that options may be
+    prefixed with either a '-' or with a '/' character, and that you can put spaces between the switch
+    letter and the argument (e.g. "-e200" or "-e 200").
 
     To specify hexadecimal values, prefix with "0x". To specify octal
     values, prefix with "0" (zero). For example, 200 = 0310 = 0xC8.
@@ -24,18 +23,18 @@ Description
 
      -?  Display help information.
 
-     -b  Display output grouped by bytes.
+     -b  Display output grouped by bytes (1 byte / 8 bits)
+     -w  Display output grouped by words (2 bytes / 16 bits)
+     -l  Display output grouped by longwords [default] (4 bytes / 32 bits)
+     -q  Display output grouped by quadwords (8 bytes / 64 bits)
+     -o  Display output grouped by octwords (16 bytes / 128 bits)
 
-     -w  Display output grouped by words (2 bytes).
-
-     -l  Display output grouped by longwords (4 bytes / default).
+     -c  Compact duplicate lines. Blocks of identical data are represented by
+         the first line of data, followed by a single line of "====".
 
      -s  Start the dump at the given location (octal, decimal or hex).
 
      -e  End the dump at the given location (octal, decimal or hex).
-
-     -v  Display all lines (default is to mark blocks of redundant lines
-         with a "====" in the address field).
 
     Important: From the command line, DOS does redirection streams as text,
     rather than binary. This means that if you want to look at a binary
