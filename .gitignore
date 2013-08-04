@@ -1,5 +1,12 @@
 # Git ignore file for hex project.
 
+# Built Files
+
+[Dd]ebug
+[Rr]elease
+
+# Visual Studio Cache, Index and Generated Files
+
 *.exe
 *.ilk
 *.obj
