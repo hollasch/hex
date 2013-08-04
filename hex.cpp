@@ -137,7 +137,6 @@ int main (int argc, char *argv[])
     {
         for (argi=1;  argi < argc;  ++argi)
         {
-            FILE *file;                // File Handle
             char *fname = argv[argi];  // File Name
 
             // Skip over command-line switches.
@@ -146,7 +145,9 @@ int main (int argc, char *argv[])
 
             // Dump the file.
 
-            if (!(file = fopen(fname,"rb")))
+            FILE *file;     // File Handle
+
+            if (0 != fopen_s(&file, fname,"rb"))
                 fprintf (stderr, "hex:  Couldn't open \"%s\".\n", fname);
             else
             {   if (fcount > 1) printf ("\n%s:\n", fname);
@@ -271,21 +272,13 @@ short ProcessArgs (int argc, char *argv[])
 This procedure dumps a file to standard output.
 *****************************************************************************/
 
-void  Dump  (FILE *file, long datastart, long dataend)
+void Dump (FILE *file, long datastart, long dataend)
 {
-    long  addr;         // Data Address
-    char  buff[16];     // Input Buffer
-    long  ii;           // Loop Counter
-    long  jj;           // Scratch Integer
-    char  lastbuff[16]; // Last Input Buffer
-    long  nbytes;       // Number of Bytes Read In
-    bool  redblock;     // Printing Redundant Block
-
     if ((dataend > 0) && (datastart > 0) && (dataend <= datastart))
         return;
 
-    addr = (datastart > 0) ? datastart : 0;
-    redblock = false;
+    size_t addr = (datastart > 0) ? datastart : 0;
+    bool   redblock = false;
 
     // If the user specified a start address, then seek to that location.
 
@@ -299,6 +292,10 @@ void  Dump  (FILE *file, long datastart, long dataend)
     }
 
     // While a non-zero number of bytes are read in...
+
+    char   buff[16];        // Input Buffer
+    char   priorBuff[16];   // Prior Input Buffer
+    size_t nbytes;          // Number of Bytes Read In
 
     while ((0 != (nbytes = fread (buff, 1, 0x10, file))) || redblock)
     {
@@ -314,7 +311,7 @@ void  Dump  (FILE *file, long datastart, long dataend)
            a single line of "====". */
 
         if (  compact && (addr != datastart) && (nbytes == 0x10)
-           && (0 == memcmp (lastbuff, buff, sizeof(buff)))
+           && (0 == memcmp (priorBuff, buff, sizeof(buff)))
            )
         {
             // Print the redundant line marker, but only once per block.
@@ -346,38 +343,40 @@ void  Dump  (FILE *file, long datastart, long dataend)
         // Write the current address to the output buffer.
 
         char *ptr = ptemplate + locs[16] + 7;
-        jj = addr;
+        size_t jj = addr;
 
-        for (ii=8;  ii;  --ii, jj>>=4, --ptr)
+        for (int i=8;  i != 0;  --i, jj>>=4, --ptr)
             *ptr = hexdig[jj & 0xf];
 
         // Write the hexadecimal value of each byte.
 
-        for (ii=0;  ii < nbytes;  ++ii)
-        {   ptemplate [locs[ii]  ] = hexdig [ (unsigned char)(buff[ii]) >> 4  ];
-            ptemplate [locs[ii]+1] = hexdig [ (unsigned char)(buff[ii]) & 0xF ];
+        int t = 0;    // Template Character Index
+
+        for (t=0;  t < nbytes;  ++t)
+        {   ptemplate [locs[t]  ] = hexdig [ (unsigned char)(buff[t]) >> 4  ];
+            ptemplate [locs[t]+1] = hexdig [ (unsigned char)(buff[t]) & 0xF ];
         }
 
         /* If we didn't read a full line, then pad to the ASCII section
            with blank spaces (we need to overwrite the previous charaters). */
 
-        for (; ii < 0x10;  ++ii)
-            ptemplate[locs[ii]] = ptemplate[locs[ii]+1] = ' ';
+        for (; t < 0x10;  ++t)
+            ptemplate[locs[t]] = ptemplate[locs[t]+1] = ' ';
 
         // Write out the ASCII values of the input buffer.
 
-        for (ii=0;  ii < nbytes;  ++ii)
-            ptemplate [locs[17]+ii]
-                = ((buff[ii] < 0x20) || (0x7E < buff[ii]) ? '.' : buff[ii]);
+        for (t=0;  t < nbytes;  ++t)
+            ptemplate [locs[17]+t]
+                = ((buff[t] < 0x20) || (0x7E < buff[t]) ? '.' : buff[t]);
 
         // If we didn't read a full line, then pad the remainder of the ASCII
         // section with blank spaces.
 
-        for (; ii < 0x10;  ++ii)
-            ptemplate [locs[17]+ii] = ' ';
+        for (; t < 0x10;  ++t)
+            ptemplate [locs[17]+t] = ' ';
 
         fputs (ptemplate, stdout);
-        memcpy (lastbuff, buff, sizeof(buff));
+        memcpy (priorBuff, buff, sizeof(buff));
         addr += nbytes;
     }
 }
