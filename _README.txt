@@ -11,13 +11,13 @@ hex: A hexadecimal dump for the Windows command line
 
     BUILDING
 
-    In the future I may convert this project to Visual Studio, but for now a
-    simple makefile does just fine. The makefile is meant to be run with the
-    Visual Studio 'nmake' command. Run 'nmake all' to build hex.exe.
+    This probject builds in Visual Studio.
 
 
-    TO DO
-    - Unicode output
+    INSTALLATION
+
+    hex.exe is the single output file for this tool. Copy it to any location on
+    your command and use as-is. There is no other installation.
 
 --
-Steve Hollasch <steve@hollasch.net>  /  2013 Aug 3
+Steve Hollasch <steve@hollasch.net>  /  2013 Aug 4
