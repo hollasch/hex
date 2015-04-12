@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="hex.cpp">
+    <ClCompile Include="..\..\src\hex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
