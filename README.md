@@ -22,5 +22,5 @@ hex.exe is the single output file for this tool. Copy it to any location on
 your command and use as-is. There is no other installation.
 
 ----
-[Steve Hollasch](mailto:steve@hollasch.net)  
+Steve Hollasch, steve@hollasch.net  
 https://github.com/hollasch/hex
