@@ -4,6 +4,17 @@
     <style type="text/css">
         body {
             margin: 4em 8% 100% 8%;
+            max-width: 36em;
+        }
+
+        codeblock {
+            display: inline-block;
+            margin-left: 6ex;
+            font-family: monospace;
+        }
+
+        table {
+            border-collapse: collapse;
         }
     </style>
 </head>
@@ -52,14 +63,14 @@ than they really are.</p>
 
 <p>To dump the contents of file <kbd>frotz.zzz</kbd> to screen:</p>
 
-<p><pre>
+<codeblock>
 hex frotz.zzz | more
-</pre>
+</codeblock>
 
 <p>To dump the words from 0x200 to 0x240 for files file1, file2 &amp; file3:</p>
 
-<p><pre>
+<codeblock>
 hex -s0x200 -e 0x240 -w file1 file2 file3
-</pre>
+</codeblock>
 
 </body>
