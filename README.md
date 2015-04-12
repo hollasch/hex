@@ -1,6 +1,5 @@
 HEX
 =====
-
 hex: A hexadecimal dump for the Windows command line
 
 DESCRIPTION
@@ -18,9 +17,8 @@ This probject builds in Visual Studio.
 
 INSTALLATION
 --------------
-hex.exe is the single output file for this tool. Copy it to any location on
-your command and use as-is. There is no other installation.
+    hex.exe is the single output file for this tool. Copy it to any location on
+    your command and use as-is. There is no other installation.
 
 ----
-
 Steve Hollasch <steve@hollasch.net>  /  2013 Aug 4
