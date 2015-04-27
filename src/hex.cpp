@@ -13,7 +13,7 @@
 #include <locale>
 
 
-static char usage[] =
+static char usage[] {
 "\n"
 "hex  /  2013.08.03  /  Steve Hollasch\n"
 "\n"
@@ -36,7 +36,8 @@ static char usage[] =
 "\n"
 "    -s  Start the dump at the given location (octal, decimal or hex).\n"
 "    -e  End the dump at the given location (octal, decimal or hex).\n"
-"\n";
+"\n"
+};
 
 
    /***  Type Definitions  ***/
@@ -53,33 +54,33 @@ long   ReadPositiveLong (char *string);
 
    /***  Data Tables  ***/
 
-char  b_template[] = "XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short b_locs[]     = { 0,3,6,9, 13,16,19,22, 26,29,32,35, 39,42,45,48, 54, 64 };
+char  b_template[] { "XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short b_locs[]     { 0,3,6,9, 13,16,19,22, 26,29,32,35, 39,42,45,48, 54, 64 };
 
-char  w_template[] = "XXXX XXXX  XXXX XXXX  XXXX XXXX  XXXX XXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short w_locs[]     = { 0,2,5,7, 11,13,16,18, 22,24,27,29, 33,35,38,40, 46, 56 };
+char  w_template[] { "XXXX XXXX  XXXX XXXX  XXXX XXXX  XXXX XXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short w_locs[]     { 0,2,5,7, 11,13,16,18, 22,24,27,29, 33,35,38,40, 46, 56 };
 
-char  l_template[] = "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short l_locs[]     = { 0,2,4,6, 9,11,13,15, 18,20,22,24, 27,29,31,33, 39, 49};
+char  l_template[] { "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short l_locs[]     { 0,2,4,6, 9,11,13,15, 18,20,22,24, 27,29,31,33, 39, 49};
 
-char  q_template[] = "XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short q_locs[]     = { 0,2,4,6,8,10,12,14, 17,19,21,23,25,27,29,31, 37, 47 };
+char  q_template[] { "XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short q_locs[]     { 0,2,4,6,8,10,12,14, 17,19,21,23,25,27,29,31, 37, 47 };
 
-char  o_template[] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n";
-short o_locs[]     = { 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30, 36, 46 };
+char  o_template[] { "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short o_locs[]     { 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30, 36, 46 };
 
-char hexdig[] = "0123456789abcdef";
+char hexdig[]      { "0123456789abcdef" };
 
 
    /***  Global Variable Definitions  ***/
 
-long      dataend  = -1;           // Input Stream End
+long      dataend { -1L };         // Input Stream End
 short     fcount;                  // Number of Files to Dump
-GroupType grouping = Group_Long;   // Grouping (Byte, Word or Long)
-short    *locs     = l_locs;       // Byte Output Locations
-long      datastart= -1;           // Input Stream Start
-char     *ptemplate = l_template;  // Line Template
-bool      compact = false;         // Compact Duplicate Lines
+GroupType grouping { Group_Long }; // Grouping (Byte, Word or Long)
+short*    locs     { l_locs };     // Byte Output Locations
+long      datastart { -1L };       // Input Stream Start
+char*     ptemplate { l_template };// Line Template
+bool      compact { false };       // Compact Duplicate Lines
 
 
 
@@ -231,7 +232,7 @@ short ProcessArgs (int argc, char *argv[])
                 }
 
                 case 's':
-                {   char *ptr = swptr+1;
+                {   auto ptr = swptr+1;
 
                     if (!*ptr)
                     {   argv[argi][0] = 0;
@@ -278,7 +279,7 @@ void Dump (FILE *file, long datastart, long dataend)
         return;
 
     size_t addr = (datastart > 0) ? datastart : 0;
-    bool   redblock = false;
+    bool   redblock { false };
 
     // If the user specified a start address, then seek to that location.
 
@@ -343,14 +344,14 @@ void Dump (FILE *file, long datastart, long dataend)
         // Write the current address to the output buffer.
 
         auto ptr = ptemplate + locs[16] + 7;
-        size_t jj = addr;
+        auto jj = addr;
 
         for (int i=8;  i != 0;  --i, jj>>=4, --ptr)
             *ptr = hexdig[jj & 0xf];
 
         // Write the hexadecimal value of each byte.
 
-        int t = 0;    // Template Character Index
+        auto t = 0;    // Template Character Index
 
         for (t=0;  t < nbytes;  ++t)
         {   ptemplate [locs[t]  ] = hexdig [ (unsigned char)(buff[t]) >> 4  ];
@@ -392,7 +393,7 @@ long ReadPositiveLong (char *string)
 {
     auto base  = 10L;    // Base of the Input Number (8, 10, or 16).
     auto value = 0L;     // Value of the Number
-    int  digit;         // Current Digit
+    int  digit;          // Current Digit
 
     /* Set the base up differently if we're getting an octal or a hexadecimal
        number. */
