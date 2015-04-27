@@ -15,7 +15,7 @@
 
 static char usage[] {
 "\n"
-"hex  /  2013.08.03  /  Steve Hollasch\n"
+"hex  /  2015.04.27  /  Steve Hollasch\n"
 "\n"
 "hex:      Dumps the contents of a file in hex and ASCII.\n"
 "usage:    hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]\n"
@@ -74,19 +74,19 @@ char hexdig[]      { "0123456789abcdef" };
 
    /***  Global Variable Definitions  ***/
 
-long      dataend { -1L };         // Input Stream End
-short     fcount;                  // Number of Files to Dump
-GroupType grouping { Group_Long }; // Grouping (Byte, Word or Long)
-short*    locs     { l_locs };     // Byte Output Locations
-long      datastart { -1L };       // Input Stream Start
-char*     ptemplate { l_template };// Line Template
-bool      compact { false };       // Compact Duplicate Lines
+long      dataend   { -1L };         // Input Stream End
+short     fcount;                    // Number of Files to Dump
+GroupType grouping  { Group_Long };  // Grouping (Byte, Word or Long)
+short*    locs      { l_locs };      // Byte Output Locations
+long      datastart { -1L };         // Input Stream Start
+char*     ptemplate { l_template };  // Line Template
+bool      compact   { false };       // Compact Duplicate Lines
 
 
 
-/*****************************************************************************
+/***************************************************************************************************
 Helper Functions
-*****************************************************************************/
+***************************************************************************************************/
 
 inline int print (char *string)
 {
@@ -100,9 +100,7 @@ inline int fprint (FILE *stream, char *string)
 }
 
 
-
-/*****************************************************************************
-*****************************************************************************/
+//**************************************************************************************************
 
 int main (int argc, char *argv[])
 {
@@ -162,22 +160,21 @@ int main (int argc, char *argv[])
 }
 
 
-
-/*****************************************************************************
-This routine processes the command-line arguments. If all goes well, the
-function returns 1, else it returns 0.
-*****************************************************************************/
+//**************************************************************************************************
 
 short ProcessArgs (int argc, char *argv[])
 {
+    // This routine processes the command-line arguments. If all goes well, the function returns 1,
+    // else it returns 0.
+
     int argi;         // Command-Line Argument Index
 
     for (fcount=0, argi=1;  argi < argc;  ++argi)
     {
         char *swptr;    // Switch Pointer
 
-        /* First check to see if the user is prompting for information. Note
-           that I also check forward-slash options for PC folks. */
+        // First check to see if the user is prompting for information. Note that I also check
+        // forward-slash options for PC folks.
 
         if (  (0 == strcmp(argv[argi], "-?"))
            || (0 == strcmp(argv[argi], "/?"))
@@ -190,8 +187,8 @@ short ProcessArgs (int argc, char *argv[])
             return 0;
         }
 
-        /* If the option does not start with a dash, we assume it's a filename,
-           so add that to the list of files. */
+        // If the option does not start with a dash, we assume it's a filename, so add that to the
+        // list of files.
 
         if (argv[argi][0] != '-')
         {   ++fcount;
@@ -268,13 +265,12 @@ short ProcessArgs (int argc, char *argv[])
 }
 
 
-
-/*****************************************************************************
-This procedure dumps a file to standard output.
-*****************************************************************************/
+//**************************************************************************************************
 
 void Dump (FILE *file, long datastart, long dataend)
 {
+    // This procedure dumps a file to standard output.
+
     if ((dataend > 0) && (datastart > 0) && (dataend <= datastart))
         return;
 
@@ -306,10 +302,9 @@ void Dump (FILE *file, long datastart, long dataend)
                 nbytes = dataend - addr + 1;
         }
 
-        /* If we're in compact print mode, and we're not at the first line,
-           and we have a full line of data, and this data line is that same
-           as the prior one, then represent subsequent duplicate lines with
-           a single line of "====". */
+        // If we're in compact print mode, and we're not at the first line, and we have a full line
+        // of data, and this data line is that same as the prior one, then represent subsequent
+        // duplicate lines with a single line of "====".
 
         if (  compact && (addr != datastart) && (nbytes == 0x10)
            && (0 == memcmp (priorBuff, buff, sizeof(buff)))
@@ -325,12 +320,11 @@ void Dump (FILE *file, long datastart, long dataend)
             continue;
         }
 
-        /* The following conditional is true when the input ends in the middle
-           of a redundant block. In this situation, we force the output of
-           the last line of the input. Note that for redblock to be true, the
-           previous number of bytes read in had to be 0x10, so we know that the
-           number of bytes in the last buffer is 0x10. We also decrement the
-           address to adjust for having skipped past the last block. */
+        // The following conditional is true when the input ends in the middle of a redundant block.
+        // In this situation, we force the output of the last line of the input. Note that for
+        // redblock to be true, the previous number of bytes read in had to be 0x10, so we know
+        // that the number of bytes in the last buffer is 0x10. We also decrement the address to
+        // adjust for having skipped past the last block.
 
         if (!nbytes && redblock)
         {   nbytes  = 0x10;
@@ -358,8 +352,8 @@ void Dump (FILE *file, long datastart, long dataend)
             ptemplate [locs[t]+1] = hexdig [ (unsigned char)(buff[t]) & 0xF ];
         }
 
-        /* If we didn't read a full line, then pad to the ASCII section
-           with blank spaces (we need to overwrite the previous charaters). */
+        // If we didn't read a full line, then pad to the ASCII section with blank spaces (we need
+        // to overwrite the previous charaters).
 
         for (; t < 0x10;  ++t)
             ptemplate[locs[t]] = ptemplate[locs[t]+1] = ' ';
@@ -370,8 +364,8 @@ void Dump (FILE *file, long datastart, long dataend)
             ptemplate [locs[17]+t]
                 = ((buff[t] < 0x20) || (0x7E < buff[t]) ? '.' : buff[t]);
 
-        // If we didn't read a full line, then pad the remainder of the ASCII
-        // section with blank spaces.
+        // If we didn't read a full line, then pad the remainder of the ASCII section with
+        // blank spaces.
 
         for (; t < 0x10;  ++t)
             ptemplate [locs[17]+t] = ' ';
@@ -383,20 +377,17 @@ void Dump (FILE *file, long datastart, long dataend)
 }
 
 
-
-/*****************************************************************************
-This function reads in a decimal, hexadecimal, or octal number from the given
-string.
-*****************************************************************************/
+//**************************************************************************************************
 
 long ReadPositiveLong (char *string)
 {
+    // This function reads in a decimal, hexadecimal, or octal number from the given string.
+
     auto base  = 10L;    // Base of the Input Number (8, 10, or 16).
     auto value = 0L;     // Value of the Number
     int  digit;          // Current Digit
 
-    /* Set the base up differently if we're getting an octal or a hexadecimal
-       number. */
+    // Set the base up differently if we're getting an octal or a hexadecimal number.
 
     if (*string == '0')
     {   if (tolower(string[1]) == 'x')
