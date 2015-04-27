@@ -42,7 +42,7 @@ static char usage[] {
 
    /***  Type Definitions  ***/
 
-enum GroupType { Group_Byte, Group_Word, Group_Long, Group_Quad, Group_Oct };
+enum class GroupType { Byte, Word, Long, Quad, Oct };
 
 
    /***  Local Function Declarations  ***/
@@ -74,13 +74,13 @@ char hexdig[]      { "0123456789abcdef" };
 
    /***  Global Variable Definitions  ***/
 
-long      dataend   { -1L };         // Input Stream End
-short     fcount;                    // Number of Files to Dump
-GroupType grouping  { Group_Long };  // Grouping (Byte, Word or Long)
-short*    locs      { l_locs };      // Byte Output Locations
-long      datastart { -1L };         // Input Stream Start
-char*     ptemplate { l_template };  // Line Template
-bool      compact   { false };       // Compact Duplicate Lines
+long      dataend   { -1L };              // Input Stream End
+short     fcount;                         // Number of Files to Dump
+GroupType grouping  { GroupType::Long };  // Grouping (Byte, Word or Long)
+short*    locs      { l_locs };           // Byte Output Locations
+long      datastart { -1L };              // Input Stream Start
+char*     ptemplate { l_template };       // Line Template
+bool      compact   { false };            // Compact Duplicate Lines
 
 
 
@@ -117,14 +117,14 @@ int main (int argc, char *argv[])
 
     switch (grouping)
     {
-        case Group_Byte:  ptemplate = b_template;  locs = b_locs;  break;
-        case Group_Word:  ptemplate = w_template;  locs = w_locs;  break;
+        case GroupType::Byte:  ptemplate = b_template;  locs = b_locs;  break;
+        case GroupType::Word:  ptemplate = w_template;  locs = w_locs;  break;
 
         default:
-        case Group_Long:  ptemplate = l_template;  locs = l_locs;  break;
+        case GroupType::Long:  ptemplate = l_template;  locs = l_locs;  break;
 
-        case Group_Quad:  ptemplate = q_template;  locs = q_locs;  break;
-        case Group_Oct:   ptemplate = o_template;  locs = o_locs;  break;
+        case GroupType::Quad:  ptemplate = q_template;  locs = q_locs;  break;
+        case GroupType::Oct:   ptemplate = o_template;  locs = o_locs;  break;
     }
 
     // If no filenames were given, dump the standard input stream, otherwise
@@ -200,11 +200,11 @@ short ProcessArgs (int argc, char *argv[])
         do
         {   switch (*swptr)
             {
-                case 'b':   grouping = Group_Byte;  break;
-                case 'l':   grouping = Group_Long;  break;
-                case 'w':   grouping = Group_Word;  break;
-                case 'q':   grouping = Group_Quad;  break;
-                case 'o':   grouping = Group_Oct;   break;
+                case 'b':   grouping = GroupType::Byte;  break;
+                case 'l':   grouping = GroupType::Long;  break;
+                case 'w':   grouping = GroupType::Word;  break;
+                case 'q':   grouping = GroupType::Quad;  break;
+                case 'o':   grouping = GroupType::Oct;   break;
 
                 case 'c':   compact  = true;        break;
 
