@@ -137,7 +137,7 @@ int main (int argc, char *argv[])
     {
         for (argi=1;  argi < argc;  ++argi)
         {
-            char *fname = argv[argi];  // File Name
+            auto fname = argv[argi];  // File Name
 
             // Skip over command-line switches.
 
@@ -342,7 +342,7 @@ void Dump (FILE *file, long datastart, long dataend)
 
         // Write the current address to the output buffer.
 
-        char *ptr = ptemplate + locs[16] + 7;
+        auto ptr = ptemplate + locs[16] + 7;
         size_t jj = addr;
 
         for (int i=8;  i != 0;  --i, jj>>=4, --ptr)
@@ -390,8 +390,8 @@ string.
 
 long ReadPositiveLong (char *string)
 {
-    long base  = 10;    // Base of the Input Number (8, 10, or 16).
-    long value = 0;     // Value of the Number
+    auto base  = 10L;    // Base of the Input Number (8, 10, or 16).
+    auto value = 0L;     // Value of the Number
     int  digit;         // Current Digit
 
     /* Set the base up differently if we're getting an octal or a hexadecimal
