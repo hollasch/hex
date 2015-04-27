@@ -54,33 +54,33 @@ long   ReadPositiveLong (char *string);
 
    /***  Data Tables  ***/
 
-char  b_template[] { "XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
-short b_locs[]     { 0,3,6,9, 13,16,19,22, 26,29,32,35, 39,42,45,48, 54, 64 };
+char  templateByte[] { "XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short locsByte[]     { 0,3,6,9, 13,16,19,22, 26,29,32,35, 39,42,45,48, 54, 64 };
 
-char  w_template[] { "XXXX XXXX  XXXX XXXX  XXXX XXXX  XXXX XXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
-short w_locs[]     { 0,2,5,7, 11,13,16,18, 22,24,27,29, 33,35,38,40, 46, 56 };
+char  templateWord[] { "XXXX XXXX  XXXX XXXX  XXXX XXXX  XXXX XXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short locsWord[]     { 0,2,5,7, 11,13,16,18, 22,24,27,29, 33,35,38,40, 46, 56 };
 
-char  l_template[] { "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
-short l_locs[]     { 0,2,4,6, 9,11,13,15, 18,20,22,24, 27,29,31,33, 39, 49};
+char  templateLong[] { "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short locsLong[]     { 0,2,4,6, 9,11,13,15, 18,20,22,24, 27,29,31,33, 39, 49};
 
-char  q_template[] { "XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
-short q_locs[]     { 0,2,4,6,8,10,12,14, 17,19,21,23,25,27,29,31, 37, 47 };
+char  templateQuad[] { "XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short locsQuad[]     { 0,2,4,6,8,10,12,14, 17,19,21,23,25,27,29,31, 37, 47 };
 
-char  o_template[] { "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
-short o_locs[]     { 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30, 36, 46 };
+char  templateOct[]  { "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
+short locsOct[]      { 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30, 36, 46 };
 
-char hexdig[]      { "0123456789abcdef" };
+char hexDigits[]     { "0123456789abcdef" };
 
 
    /***  Global Variable Definitions  ***/
 
-long      dataend   { -1L };              // Input Stream End
-short     fcount;                         // Number of Files to Dump
-GroupType grouping  { GroupType::Long };  // Grouping (Byte, Word or Long)
-short*    locs      { l_locs };           // Byte Output Locations
-long      datastart { -1L };              // Input Stream Start
-char*     ptemplate { l_template };       // Line Template
-bool      compact   { false };            // Compact Duplicate Lines
+long      dataEnd      { -1L };              // Input Stream End
+short     fileCount;                         // Number of Files to Dump
+GroupType grouping     { GroupType::Long };  // Grouping (Byte, Word or Long)
+short*    locs         { locsLong };         // Byte Output Locations
+long      dataStart    { -1L };              // Input Stream Start
+char*     lineTemplate { templateLong };     // Line lineTemplate
+bool      compact      { false };            // Compact Duplicate Lines
 
 
 
@@ -117,21 +117,21 @@ int main (int argc, char *argv[])
 
     switch (grouping)
     {
-        case GroupType::Byte:  ptemplate = b_template;  locs = b_locs;  break;
-        case GroupType::Word:  ptemplate = w_template;  locs = w_locs;  break;
+        case GroupType::Byte:  lineTemplate = templateByte;  locs = locsByte;  break;
+        case GroupType::Word:  lineTemplate = templateWord;  locs = locsWord;  break;
 
         default:
-        case GroupType::Long:  ptemplate = l_template;  locs = l_locs;  break;
+        case GroupType::Long:  lineTemplate = templateLong;  locs = locsLong;  break;
 
-        case GroupType::Quad:  ptemplate = q_template;  locs = q_locs;  break;
-        case GroupType::Oct:   ptemplate = o_template;  locs = o_locs;  break;
+        case GroupType::Quad:  lineTemplate = templateQuad;  locs = locsQuad;  break;
+        case GroupType::Oct:   lineTemplate = templateOct;   locs = locsOct;   break;
     }
 
     // If no filenames were given, dump the standard input stream, otherwise
     // dump each of the named files.
 
-    if (fcount == 0)
-        Dump (stdin, datastart, dataend);
+    if (fileCount == 0)
+        Dump (stdin, dataStart, dataEnd);
     else
     {
         for (argi=1;  argi < argc;  ++argi)
@@ -149,8 +149,8 @@ int main (int argc, char *argv[])
             if (0 != fopen_s(&file, fname,"rb"))
                 fprintf (stderr, "hex:  Couldn't open \"%s\".\n", fname);
             else
-            {   if (fcount > 1) printf ("\n%s:\n", fname);
-                Dump (file, datastart, dataend);
+            {   if (fileCount > 1) printf ("\n%s:\n", fname);
+                Dump (file, dataStart, dataEnd);
                 fclose (file);
             }
         }
@@ -167,9 +167,7 @@ short ProcessArgs (int argc, char *argv[])
     // This routine processes the command-line arguments. If all goes well, the function returns 1,
     // else it returns 0.
 
-    int argi;         // Command-Line Argument Index
-
-    for (fcount=0, argi=1;  argi < argc;  ++argi)
+    for (auto argi = 1, fileCount = 0;  argi < argc;  ++argi)
     {
         char *swptr;    // Switch Pointer
 
@@ -191,7 +189,7 @@ short ProcessArgs (int argc, char *argv[])
         // list of files.
 
         if (argv[argi][0] != '-')
-        {   ++fcount;
+        {   ++fileCount;
             continue;
         }
 
@@ -206,7 +204,10 @@ short ProcessArgs (int argc, char *argv[])
                 case 'q':   grouping = GroupType::Quad;  break;
                 case 'o':   grouping = GroupType::Oct;   break;
 
-                case 'c':   compact  = true;        break;
+                case 'c':
+                {   compact  = true;
+                    break;
+                }
 
                 case 'e':
                 {   char *ptr = swptr+1;
@@ -222,7 +223,7 @@ short ProcessArgs (int argc, char *argv[])
                         return 0;
                     }
 
-                    dataend = ReadPositiveLong (ptr);
+                    dataEnd = ReadPositiveLong (ptr);
 
                     swptr = 0;
                     break;
@@ -242,7 +243,7 @@ short ProcessArgs (int argc, char *argv[])
                         return 0;
                     }
 
-                    datastart = ReadPositiveLong (ptr);
+                    dataStart = ReadPositiveLong (ptr);
 
                     swptr = 0;
                     break;
@@ -267,22 +268,22 @@ short ProcessArgs (int argc, char *argv[])
 
 //**************************************************************************************************
 
-void Dump (FILE *file, long datastart, long dataend)
+void Dump (FILE *file, long dataStart, long dataEnd)
 {
     // This procedure dumps a file to standard output.
 
-    if ((dataend > 0) && (datastart > 0) && (dataend <= datastart))
+    if ((dataEnd > 0) && (dataStart > 0) && (dataEnd <= dataStart))
         return;
 
-    size_t addr = (datastart > 0) ? datastart : 0;
+    size_t addr = (dataStart > 0) ? dataStart : 0;
     bool   redblock { false };
 
     // If the user specified a start address, then seek to that location.
 
-    if (datastart < 0)
-        datastart = 0;
+    if (dataStart < 0)
+        dataStart = 0;
     else
-    {   if (0 != fseek (file, datastart, 0))
+    {   if (0 != fseek (file, dataStart, 0))
         {   fprint (stderr, "hex:  fseek to start position failed.\n");
             return;
         }
@@ -296,17 +297,17 @@ void Dump (FILE *file, long datastart, long dataend)
 
     while ((0 != (nbytes = fread (buff, 1, 0x10, file))) || redblock)
     {
-        if (dataend > 0)
-        {   if ((dataend <= addr) && !redblock) break;
-            if (dataend < (addr+0x10))
-                nbytes = dataend - addr + 1;
+        if (dataEnd > 0)
+        {   if ((dataEnd <= addr) && !redblock) break;
+            if (dataEnd < (addr+0x10))
+                nbytes = dataEnd - addr + 1;
         }
 
         // If we're in compact print mode, and we're not at the first line, and we have a full line
         // of data, and this data line is that same as the prior one, then represent subsequent
         // duplicate lines with a single line of "====".
 
-        if (  compact && (addr != datastart) && (nbytes == 0x10)
+        if (  compact && (addr != dataStart) && (nbytes == 0x10)
            && (0 == memcmp (priorBuff, buff, sizeof(buff)))
            )
         {
@@ -337,40 +338,40 @@ void Dump (FILE *file, long datastart, long dataend)
 
         // Write the current address to the output buffer.
 
-        auto ptr = ptemplate + locs[16] + 7;
+        auto ptr = lineTemplate + locs[16] + 7;
         auto jj = addr;
 
         for (int i=8;  i != 0;  --i, jj>>=4, --ptr)
-            *ptr = hexdig[jj & 0xf];
+            *ptr = hexDigits[jj & 0xf];
 
         // Write the hexadecimal value of each byte.
 
-        auto t = 0;    // Template Character Index
+        auto t = 0;    // lineTemplate Character Index
 
         for (t=0;  t < nbytes;  ++t)
-        {   ptemplate [locs[t]  ] = hexdig [ (unsigned char)(buff[t]) >> 4  ];
-            ptemplate [locs[t]+1] = hexdig [ (unsigned char)(buff[t]) & 0xF ];
+        {   lineTemplate [locs[t]  ] = hexDigits [ (unsigned char)(buff[t]) >> 4  ];
+            lineTemplate [locs[t]+1] = hexDigits [ (unsigned char)(buff[t]) & 0xF ];
         }
 
         // If we didn't read a full line, then pad to the ASCII section with blank spaces (we need
         // to overwrite the previous charaters).
 
         for (; t < 0x10;  ++t)
-            ptemplate[locs[t]] = ptemplate[locs[t]+1] = ' ';
+            lineTemplate[locs[t]] = lineTemplate[locs[t]+1] = ' ';
 
         // Write out the ASCII values of the input buffer.
 
         for (t=0;  t < nbytes;  ++t)
-            ptemplate [locs[17]+t]
+            lineTemplate [locs[17]+t]
                 = ((buff[t] < 0x20) || (0x7E < buff[t]) ? '.' : buff[t]);
 
         // If we didn't read a full line, then pad the remainder of the ASCII section with
         // blank spaces.
 
         for (; t < 0x10;  ++t)
-            ptemplate [locs[17]+t] = ' ';
+            lineTemplate [locs[17]+t] = ' ';
 
-        fputs (ptemplate, stdout);
+        fputs (lineTemplate, stdout);
         memcpy (priorBuff, buff, sizeof(buff));
         addr += nbytes;
     }
@@ -405,8 +406,7 @@ long ReadPositiveLong (char *string)
         digit = *string++;
 
         switch (digit)
-        {   case '0': case '1': case '2': case '3': case '4':
-            case '5': case '6': case '7': case '8': case '9':
+        {   case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
                 digit -= '0';
                 break;
 
