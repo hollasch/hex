@@ -47,9 +47,8 @@ enum class GroupType { Byte, Word, Long, Quad, Oct };
 
    /***  Local Function Declarations  ***/
 
-void   Dump             (FILE*, long, long);
-short  ProcessArgs      (int, char*[]);
-long   ReadPositiveLong (char *string);
+void  Dump        (FILE*, long, long);
+short ProcessArgs (int, char*[]);
 
 
    /***  Data Tables  ***/
@@ -195,6 +194,7 @@ short ProcessArgs (int argc, char *argv[])
 
         swptr = argv[argi] + 1;
 
+        // Handle switch type
         do
         {   switch (*swptr)
             {
@@ -223,8 +223,7 @@ short ProcessArgs (int argc, char *argv[])
                         return 0;
                     }
 
-                    dataEnd = ReadPositiveLong (ptr);
-
+                    dataEnd = strtoul (ptr, nullptr, 0);
                     swptr = 0;
                     break;
                 }
@@ -243,8 +242,7 @@ short ProcessArgs (int argc, char *argv[])
                         return 0;
                     }
 
-                    dataStart = ReadPositiveLong (ptr);
-
+                    dataStart = strtoul (ptr, nullptr, 0);
                     swptr = 0;
                     break;
                 }
@@ -374,54 +372,5 @@ void Dump (FILE *file, long dataStart, long dataEnd)
         fputs (lineTemplate, stdout);
         memcpy (priorBuff, buff, sizeof(buff));
         addr += nbytes;
-    }
-}
-
-
-//**************************************************************************************************
-
-long ReadPositiveLong (char *string)
-{
-    // This function reads in a decimal, hexadecimal, or octal number from the given string.
-
-    auto base  = 10L;    // Base of the Input Number (8, 10, or 16).
-    auto value = 0L;     // Value of the Number
-    int  digit;          // Current Digit
-
-    // Set the base up differently if we're getting an octal or a hexadecimal number.
-
-    if (*string == '0')
-    {   if (tolower(string[1]) == 'x')
-        {   string += 2;
-            base = 16;
-        }
-        else
-        {   string ++;
-            base = 8;
-        }
-    }
-
-    for (;;)
-    {
-        digit = *string++;
-
-        switch (digit)
-        {   case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
-                digit -= '0';
-                break;
-
-            case 'a': case 'b': case 'c': case 'd': case 'e': case 'f':
-            case 'A': case 'B': case 'C': case 'D': case 'E': case 'F':
-                digit = 10 + tolower(digit) - 'a';
-                break;
-
-            default:
-                return value;
-        }
-
-        if (digit >= base)
-            return value;
-
-        value = (value * base) + digit;
     }
 }
