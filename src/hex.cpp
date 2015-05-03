@@ -75,7 +75,7 @@ char hexDigits[]     { "0123456789abcdef" };
    /***  Global Variable Definitions  ***/
 
 long      dataEnd      { -1L };              // Input Stream End
-short     fileCount;                         // Number of Files to Dump
+int       fileCount    { 0 };                // Number of Files to Dump
 GroupType grouping     { GroupType::Long };  // Grouping (Byte, Word or Long)
 short*    locs         { locsLong };         // Byte Output Locations
 long      dataStart    { -1L };              // Input Stream Start
@@ -167,7 +167,9 @@ short ProcessArgs (int argc, char *argv[])
     // This routine processes the command-line arguments. If all goes well, the function returns 1,
     // else it returns 0.
 
-    for (auto argi = 1, fileCount = 0;  argi < argc;  ++argi)
+    fileCount = 0;
+
+    for (auto argi = 1;  argi < argc;  ++argi)
     {
         char *swptr;    // Switch Pointer
 
