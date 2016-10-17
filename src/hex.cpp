@@ -1,10 +1,8 @@
 //**************************************************************************************************
-//
 // hex
 //
 // This tool reads data from the standard input stream and prints to the standard output stream the
 // hexadecimal and ASCII codes for each byte.
-//
 //**************************************************************************************************
 
 #include <stdio.h>
@@ -15,10 +13,10 @@
 
 static char usage[] {
 "\n"
-"hex  /  2015.04.27  /  Steve Hollasch\n"
+"hex  v1.0.0  https://github.com/hollasch/hex\n"
 "\n"
-"hex:      Dumps the contents of a file in hex and ASCII.\n"
-"usage:    hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]\n"
+"hex:    Dumps the contents of a file in hex and ASCII.\n"
+"usage:  hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]\n"
 "\n"
 "    This tool dumps the contents of a file in hexadecimal and ascii. If no\n"
 "    filenames are supplied, hex reads from the standard input stream.\n"
