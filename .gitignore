@@ -6,6 +6,7 @@
 
 # Visual Studio Cache, Index and Generated Files
 
+.vs/
 *.exe
 *.ilk
 *.obj

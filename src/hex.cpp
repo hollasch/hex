@@ -11,9 +11,10 @@
 #include <locale>
 
 
+static char *programVersion = "1.0.1";
+
 static char usage[] {
-"\n"
-"hex  v1.0.0  https://github.com/hollasch/hex\n"
+"https://github.com/hollasch/hex\n"
 "\n"
 "hex:    Dumps the contents of a file in hex and ASCII.\n"
 "usage:  hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]\n"
@@ -107,7 +108,12 @@ int main (int argc, char *argv[])
     // Process the command-line arguments.
 
     if (!ProcessArgs (argc, argv))
-    {   fprint (stderr, usage);
+    {
+        fprint (stderr, "hex v");
+        fprint (stderr, programVersion);
+        fprint (stderr, "\n");
+
+        fprint (stderr, usage);
         exit (0);
     }
 
