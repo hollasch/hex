@@ -11,33 +11,31 @@
 #include <locale>
 
 
-static char *programVersion = "1.0.1";
+static char *programVersion = "v1.0.1";
 
-static char usage[] {
-"https://github.com/hollasch/hex\n"
-"\n"
-"hex:    Dumps the contents of a file in hex and ASCII.\n"
-"usage:  hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]\n"
-"\n"
-"    This tool dumps the contents of a file in hexadecimal and ascii. If no\n"
-"    filenames are supplied, hex reads from the standard input stream.\n"
-"\n"
-"    -b  Display output grouped by bytes.\n"
-"    -w  Display output grouped by words (16-bits).\n"
-"    -l  Display output grouped by longwords (32-bits).\n"
-"    -q  Display output grouped by quadwords (64-bits).\n"
-"    -o  Display output grouped by octwords (128-bits).\n"
-"\n"
-"    -c  Compact duplicate lines. Blocks of identical data are represented\n"
-"        by the first line of data followed by a single line of \"====\".\n"
-"\n"
-"    -s <address>\n"
-"    -e <address>\n"
-"        Start/end the dump at the given location. To specify octal, prefix\n"
-"        with '0'. To specify hexadecimal, prefix with '0x'. For example,\n"
-"        200 = 0310 = 0xc8.\n"
-"\n"
-};
+static char usage[] = R"(
+usage:  hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]
+source: https://github.com/hollasch/hex
+
+    This tool dumps the contents of a file in hexadecimal and ascii. If no
+    filenames are supplied, hex reads from the standard input stream.
+
+    -b  Display output grouped by bytes.
+    -w  Display output grouped by words (16-bits).
+    -l  Display output grouped by longwords (32-bits).
+    -q  Display output grouped by quadwords (64-bits).
+    -o  Display output grouped by octwords (128-bits).
+
+    -c  Compact duplicate lines. Blocks of identical data are represented
+        by the first line of data followed by a single line of \"====\".
+
+    -s <address>
+    -e <address>
+        Start/end the dump at the given location. To specify octal, prefix
+        with '0'. To specify hexadecimal, prefix with '0x'. For example,
+        200 = 0310 = 0xc8.
+
+)";
 
 
    /***  Type Definitions  ***/
@@ -109,10 +107,9 @@ int main (int argc, char *argv[])
 
     if (!ProcessArgs (argc, argv))
     {
-        fprint (stderr, "hex v");
+        fprint (stderr, "hex ");
         fprint (stderr, programVersion);
-        fprint (stderr, "\n");
-
+        fprint (stderr, " - dumps the contents of a file in hex and ASCII.");
         fprint (stderr, usage);
         exit (0);
     }
