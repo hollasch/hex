@@ -61,9 +61,26 @@ To dump the words from 0x200 to 0x240 for files _file1_, _file2_ and _file3_:
 
 Building
 ----------
-This probject builds in visual studio, though I'm planning on adding Mac OS X
-support with XCode. You'll notice that all build resources are in the build
-directory, specialized by OS. Right now, there's just `build/win`.
+This project uses `CMake` to build the hex tool. Among other sources, you can
+find CMake at https://cmake.org/.
+
+To configure this project for the default configuration for your machine, go to
+the root of this project and run the command
+
+    cmake -S src -B build
+
+This will create a new directory, `build/`, which will contain all of the
+project output, and the configured build setup.
+
+To build, run
+
+    cmake --build build
+
+This will build the debug version. To build the release version, run
+
+    cmake --build build --config Release
+
+You will find the built executable in `build/Debug` or `build/Release`.
 
 
 Installation
@@ -71,6 +88,7 @@ Installation
 `hex.exe` is the single output file for this tool. Copy it to any location on
 your command and use as-is. There is no other installation.
 
+
 ----
-Steve Hollasch, steve@hollasch.net  
+Steve Hollasch, steve@hollasch.net
 https://github.com/hollasch/hex
