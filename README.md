@@ -1,22 +1,22 @@
-`hex`
+hex
 ================================================================================
 A hexadecimal dump for the Windows command line.
 
 
 Summary
--------------
+--------
 This is a simple hexadecimal print utility that reads input from the standard
 input stream or from files specified on the command line. See doc/hex.html for
 usage information.
 
 
 Usage
--------
+------
     hex [-?] [-b|w|l|q|o] [-c] [-s<start>] [-e<end>] [file] ... [file]
 
 
 Description
--------------
+------------
 `hex` is a filter that reads data from either standard input (if no filenames
 are supplied) or from the list of files, and dumps the data in hexadecimal and
 ASCII. Note that options may be prefixed with either a `'-'` or with a `'/'`
@@ -48,7 +48,7 @@ likely appear much shorter than they really are.
 
 
 Examples
-----------
+---------
 
 To dump the contents of file `frotz.zzz` to screen:
 
@@ -60,14 +60,14 @@ To dump the words from 0x200 to 0x240 for files _file1_, _file2_ and _file3_:
 
 
 Building
-----------
+---------
 This project uses `CMake` to build the hex tool. Among other sources, you can
 find CMake at https://cmake.org/.
 
 To configure this project for the default configuration for your machine, go to
 the root of this project and run the command
 
-    cmake -S src -B build
+    cmake -B build
 
 This will create a new directory, `build/`, which will contain all of the
 project output, and the configured build setup.
@@ -84,7 +84,7 @@ You will find the built executable in `build/Debug` or `build/Release`.
 
 
 Installation
---------------
+-------------
 `hex.exe` is the single output file for this tool. Copy it to any location on
 your command and use as-is. There is no other installation.
 
