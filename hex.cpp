@@ -38,6 +38,8 @@ usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
         '0'. To specify hexadecimal, prefix with '0x'. For example, 200 = 0310 =
         0xc8.
 
+    --version
+        Display version information
 )";
 
 

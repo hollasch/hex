@@ -6,6 +6,7 @@ v1.1.0  (2020-10-03)
   - Delete: options `/h` and `-help`
   - Add: long option forms --help, --byte, --word, --longword, --quadword, --octword, --compact,
     --start, and --end
+  - Add: new option `--version`.
   - Change: Various refactorings
   - Change: converted project to CMake
 

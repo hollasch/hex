@@ -11,11 +11,12 @@ files specified on the command line. See doc/hex.html for usage information.
 
 Usage
 ------
-    hex v1.1.0 - dumps the contents of a file in hex and ASCII.
+    hex v1.1.0  2020-10-03  https://github.com/hollasch/hex
+
+    hex:    dumps the contents of a file in hex and ASCII
     usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
                 [--octword|-o] [--compact|-c]
                 [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
-    source: https://github.com/hollasch/hex
 
         This tool dumps the contents of a file in hexadecimal and ascii. If no
         filenames are supplied, hex reads from the standard input stream.
@@ -35,6 +36,9 @@ Usage
             Start/end the dump at the given location. To specify octal, prefix with
             '0'. To specify hexadecimal, prefix with '0x'. For example, 200 = 0310 =
             0xc8.
+
+        --version
+            Display version information
 
 
 Description
