@@ -46,12 +46,6 @@ source: https://github.com/hollasch/hex
 enum class GroupType { Byte, Word, Long, Quad, Oct };
 
 
-   /***  Local Function Declarations  ***/
-
-void  Dump        (FILE*, long, long);
-short ProcessArgs (int, char*[]);
-
-
    /***  Data Tables  ***/
 
 char  templateByte[] { "XX XX XX XX  XX XX XX XX  XX XX XX XX  XX XX XX XX  # AAAAAAAA  CCCCCCCCCCCCCCCC\n" };
@@ -83,10 +77,7 @@ char*     lineTemplate { templateLong };     // Line lineTemplate
 bool      compact      { false };            // Compact Duplicate Lines
 
 
-
-/***************************************************************************************************
-Helper Functions
-***************************************************************************************************/
+//----------------------------------------------------------------------------------------------------------------------
 
 inline int print (const char *string) {
     return fputs (string, stdout);
@@ -98,65 +89,6 @@ inline int fprint (FILE *stream, const char *string) {
 }
 
 
-//**************************************************************************************************
-
-int main (int argc, char *argv[]) {
-
-    long argi;  // Command-Line Argument Index
-
-    // Process the command-line arguments.
-
-    if (!ProcessArgs (argc, argv))
-        exit (0);
-
-    // Set up the output buffer according to the grouping type.
-
-    switch (grouping) {
-        case GroupType::Byte:  lineTemplate = templateByte;  locs = locsByte;  break;
-        case GroupType::Word:  lineTemplate = templateWord;  locs = locsWord;  break;
-
-        default:
-        case GroupType::Long:  lineTemplate = templateLong;  locs = locsLong;  break;
-
-        case GroupType::Quad:  lineTemplate = templateQuad;  locs = locsQuad;  break;
-        case GroupType::Oct:   lineTemplate = templateOct;   locs = locsOct;   break;
-    }
-
-    // If no filenames were given, dump the standard input stream, otherwise dump each of the named
-    // files.
-
-    if (fileCount == 0)
-        Dump (stdin, dataStart, dataEnd);
-    else {
-
-        for (argi=1;  argi < argc;  ++argi) {
-
-            auto fname = argv[argi];  // File Name
-
-            // Skip over command-line switches.
-
-            if (!*fname) continue;
-
-            // Dump the file.
-
-            FILE *file;     // File Handle
-
-            if (0 != fopen_s(&file, fname,"rb"))
-                fprintf (stderr, "hex: Couldn't open \"%s\".\n", fname);
-            else {
-                if (fileCount > 1) printf ("\n%s:\n", fname);
-                Dump (file, dataStart, dataEnd);
-                fclose (file);
-            }
-        }
-    }
-
-    return 0;
-}
-
-
-//**************************************************************************************************
-
 void PrintHelp() {
     print ("\nhex ");
     print (programVersion);
@@ -164,12 +96,11 @@ void PrintHelp() {
     print (usage);
 }
 
-//**************************************************************************************************
 
-short ProcessArgs (int argc, char *argv[]) {
+bool ProcessArgs (int argc, char *argv[]) {
 
-    // This routine processes the command-line arguments. If all goes well, the function returns 1,
-    // else it returns 0.
+    // This routine processes the command-line arguments. This function returns true if all
+    // arguments were successfully processed.
 
     fileCount = 0;
 
@@ -184,7 +115,7 @@ short ProcessArgs (int argc, char *argv[]) {
            )
         {
             PrintHelp();
-            return 0;
+            return false;
         }
 
         // If the option does not start with a dash, we assume it's a filename, so add that to the
@@ -221,13 +152,13 @@ short ProcessArgs (int argc, char *argv[]) {
                 gotEnd = true;
             else {
                 fprintf (stderr, "hex: Unknown option (%s).\n", argv[argi]);
-                return 0;
+                return false;
             }
 
             if (gotStart || gotEnd) {
                 if (argc <= argi+1) {
                     fprintf (stderr, "hex: No argument given to %s option.\n", argv[argi]);
-                    return 0;
+                    return false;
                 }
 
                 argv[argi++][0] = 0; // Zap the switch argument.
@@ -267,7 +198,7 @@ short ProcessArgs (int argc, char *argv[]) {
 
                         if (argc <= argi) {
                             fprint (stderr, "hex: No argument given to -e option.\n");
-                            return 0;
+                            return false;
                         }
 
                         dataEnd = strtoul (ptr, nullptr, 0);
@@ -285,7 +216,7 @@ short ProcessArgs (int argc, char *argv[]) {
 
                         if (argc <= argi) {
                             fprint (stderr, "hex: No argument given to -s option.\n");
-                            return 0;
+                            return false;
                         }
 
                         dataStart = strtoul (ptr, nullptr, 0);
@@ -295,7 +226,7 @@ short ProcessArgs (int argc, char *argv[]) {
 
                     default:
                         fprintf (stderr, "hex: Unknown option (%c).\n", *swptr);
-                        return 0;
+                        return false;
                 }
 
                 if (swptr)
@@ -308,11 +239,9 @@ short ProcessArgs (int argc, char *argv[]) {
 
     }
 
-    return 1;
+    return true;
 }
 
-
-//**************************************************************************************************
 
 void Dump (FILE *file, long dataStart, long dataEnd) {
 
@@ -418,4 +347,59 @@ void Dump (FILE *file, long dataStart, long dataEnd) {
         memcpy (priorBuff, buff, sizeof(buff));
         addr += nbytes;
     }
+}
+
+
+int main (int argc, char *argv[]) {
+
+    long argi;  // Command-Line Argument Index
+
+    // Process the command-line arguments.
+
+    if (!ProcessArgs (argc, argv))
+        exit (0);
+
+    // Set up the output buffer according to the grouping type.
+
+    switch (grouping) {
+        case GroupType::Byte:  lineTemplate = templateByte;  locs = locsByte;  break;
+        case GroupType::Word:  lineTemplate = templateWord;  locs = locsWord;  break;
+
+        default:
+        case GroupType::Long:  lineTemplate = templateLong;  locs = locsLong;  break;
+
+        case GroupType::Quad:  lineTemplate = templateQuad;  locs = locsQuad;  break;
+        case GroupType::Oct:   lineTemplate = templateOct;   locs = locsOct;   break;
+    }
+
+    // If no filenames were given, dump the standard input stream, otherwise dump each of the named
+    // files.
+
+    if (fileCount == 0)
+        Dump (stdin, dataStart, dataEnd);
+    else {
+
+        for (argi=1;  argi < argc;  ++argi) {
+
+            auto fname = argv[argi];  // File Name
+
+            // Skip over command-line switches.
+
+            if (!*fname) continue;
+
+            // Dump the file.
+
+            FILE *file;     // File Handle
+
+            if (0 != fopen_s(&file, fname,"rb"))
+                fprintf (stderr, "hex: Couldn't open \"%s\".\n", fname);
+            else {
+                if (fileCount > 1) printf ("\n%s:\n", fname);
+                Dump (file, dataStart, dataEnd);
+                fclose (file);
+            }
+        }
+    }
+
+    return 0;
 }
