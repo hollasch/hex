@@ -14,8 +14,9 @@
 static char *programVersion = "v1.1.0";
 
 static char usage[] = R"(
-usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q] [--octword|-o]
-            [--compact|-c] [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
+usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
+            [--octword|-o] [--compact|-c]
+            [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
 source: https://github.com/hollasch/hex
 
     This tool dumps the contents of a file in hexadecimal and ascii. If no
@@ -28,14 +29,14 @@ source: https://github.com/hollasch/hex
     --octword,-o   Display output grouped by octwords (128-bits)
 
     --compact, -c
-        Compact duplicate lines. Blocks of identical data are represented
-        by the first line of data followed by a single line of \"====\".
+        Compact duplicate lines. Blocks of identical data are represented by the
+        first line of data followed by a single line of \"====\".
 
     --start <address>, -s <address>
     --end <address>, -e <address>
-        Start/end the dump at the given location. To specify octal, prefix
-        with '0'. To specify hexadecimal, prefix with '0x'. For example,
-        200 = 0310 = 0xc8.
+        Start/end the dump at the given location. To specify octal, prefix with
+        '0'. To specify hexadecimal, prefix with '0x'. For example, 200 = 0310 =
+        0xc8.
 
 )";
 
@@ -130,8 +131,8 @@ int main (int argc, char *argv[])
         case GroupType::Oct:   lineTemplate = templateOct;   locs = locsOct;   break;
     }
 
-    // If no filenames were given, dump the standard input stream, otherwise
-    // dump each of the named files.
+    // If no filenames were given, dump the standard input stream, otherwise dump each of the named
+    // files.
 
     if (fileCount == 0)
         Dump (stdin, dataStart, dataEnd);
@@ -379,9 +380,9 @@ void Dump (FILE *file, long dataStart, long dataEnd)
 
         // The following conditional is true when the input ends in the middle of a redundant block.
         // In this situation, we force the output of the last line of the input. Note that for
-        // redblock to be true, the previous number of bytes read in had to be 0x10, so we know
-        // that the number of bytes in the last buffer is 0x10. We also decrement the address to
-        // adjust for having skipped past the last block.
+        // redblock to be true, the previous number of bytes read in had to be 0x10, so we know that
+        // the number of bytes in the last buffer is 0x10. We also decrement the address to adjust
+        // for having skipped past the last block.
 
         if (!nbytes && redblock)
         {   nbytes  = 0x10;
@@ -421,8 +422,8 @@ void Dump (FILE *file, long dataStart, long dataEnd)
             lineTemplate [locs[17]+t]
                 = ((buff[t] < 0x20) || (0x7E < buff[t]) ? '.' : buff[t]);
 
-        // If we didn't read a full line, then pad the remainder of the ASCII section with
-        // blank spaces.
+        // If we didn't read a full line, then pad the remainder of the ASCII section with blank
+        // spaces.
 
         for (; t < 0x10;  ++t)
             lineTemplate [locs[17]+t] = ' ';
