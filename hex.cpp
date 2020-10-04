@@ -11,9 +11,9 @@
 #include <locale>
 
 
-static char *programVersion = "v1.1.0";
+static auto programVersion = "v1.1.0";
 
-static char usage[] = R"(
+static auto usage = R"(
 usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
             [--octword|-o] [--compact|-c]
             [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
@@ -88,12 +88,12 @@ bool      compact      { false };            // Compact Duplicate Lines
 Helper Functions
 ***************************************************************************************************/
 
-inline int print (char *string) {
+inline int print (const char *string) {
     return fputs (string, stdout);
 }
 
 
-inline int fprint (FILE *stream, char *string) {
+inline int fprint (FILE *stream, const char *string) {
     return fputs (string, stream);
 }
 
@@ -199,8 +199,8 @@ short ProcessArgs (int argc, char *argv[]) {
         if (*swptr == '-') {
             ++swptr;
 
-            bool gotStart = false;
-            bool gotEnd = false;
+            auto gotStart = false;
+            auto gotEnd = false;
 
             if (0 == strcmp(swptr, "byte"))
                 grouping = GroupType::Byte;
@@ -257,7 +257,7 @@ short ProcessArgs (int argc, char *argv[]) {
                     }
 
                     case 'e': {
-                        char *ptr = swptr+1;
+                        auto *ptr = swptr+1;
 
                         if (!*ptr) {
                             argv[argi][0] = 0;
@@ -275,7 +275,7 @@ short ProcessArgs (int argc, char *argv[]) {
                     }
 
                     case 's': {
-                        auto ptr = swptr+1;
+                        auto *ptr = swptr+1;
 
                         if (!*ptr) {
                             argv[argi][0] = 0;
@@ -321,7 +321,7 @@ void Dump (FILE *file, long dataStart, long dataEnd) {
         return;
 
     size_t addr = (dataStart > 0) ? dataStart : 0;
-    bool   redblock { false };
+    auto   redblock = false;
 
     // If the user specified a start address, then seek to that location.
 
