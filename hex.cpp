@@ -88,28 +88,25 @@ bool      compact      { false };            // Compact Duplicate Lines
 Helper Functions
 ***************************************************************************************************/
 
-inline int print (char *string)
-{
+inline int print (char *string) {
     return fputs (string, stdout);
 }
 
 
-inline int fprint (FILE *stream, char *string)
-{
+inline int fprint (FILE *stream, char *string) {
     return fputs (string, stream);
 }
 
 
 //**************************************************************************************************
 
-int main (int argc, char *argv[])
-{
+int main (int argc, char *argv[]) {
+
     long argi;  // Command-Line Argument Index
 
     // Process the command-line arguments.
 
-    if (!ProcessArgs (argc, argv))
-    {
+    if (!ProcessArgs (argc, argv)) {
         fprint (stderr, "hex ");
         fprint (stderr, programVersion);
         fprint (stderr, " - dumps the contents of a file in hex and ASCII.");
@@ -119,8 +116,7 @@ int main (int argc, char *argv[])
 
     // Set up the output buffer according to the grouping type.
 
-    switch (grouping)
-    {
+    switch (grouping) {
         case GroupType::Byte:  lineTemplate = templateByte;  locs = locsByte;  break;
         case GroupType::Word:  lineTemplate = templateWord;  locs = locsWord;  break;
 
@@ -136,10 +132,10 @@ int main (int argc, char *argv[])
 
     if (fileCount == 0)
         Dump (stdin, dataStart, dataEnd);
-    else
-    {
-        for (argi=1;  argi < argc;  ++argi)
-        {
+    else {
+
+        for (argi=1;  argi < argc;  ++argi) {
+
             auto fname = argv[argi];  // File Name
 
             // Skip over command-line switches.
@@ -152,8 +148,8 @@ int main (int argc, char *argv[])
 
             if (0 != fopen_s(&file, fname,"rb"))
                 fprintf (stderr, "hex: Couldn't open \"%s\".\n", fname);
-            else
-            {   if (fileCount > 1) printf ("\n%s:\n", fname);
+            else {
+                if (fileCount > 1) printf ("\n%s:\n", fname);
                 Dump (file, dataStart, dataEnd);
                 fclose (file);
             }
@@ -166,15 +162,14 @@ int main (int argc, char *argv[])
 
 //**************************************************************************************************
 
-short ProcessArgs (int argc, char *argv[])
-{
+short ProcessArgs (int argc, char *argv[]) {
+
     // This routine processes the command-line arguments. If all goes well, the function returns 1,
     // else it returns 0.
 
     fileCount = 0;
 
-    for (auto argi = 1;  argi < argc;  ++argi)
-    {
+    for (auto argi = 1;  argi < argc;  ++argi) {
         char *swptr;    // Switch Pointer
 
         // First check to see if the user is prompting for information. Note that I also check
@@ -194,15 +189,14 @@ short ProcessArgs (int argc, char *argv[])
         // If the option does not start with a dash, we assume it's a filename, so add that to the
         // list of files.
 
-        if (argv[argi][0] != '-')
-        {   ++fileCount;
+        if (argv[argi][0] != '-') {
+            ++fileCount;
             continue;
         }
 
         swptr = argv[argi] + 1;
 
-        if (*swptr == '-')
-        {
+        if (*swptr == '-') {
             ++swptr;
 
             bool gotStart = false;
@@ -224,16 +218,14 @@ short ProcessArgs (int argc, char *argv[])
                 gotStart = true;
             else if (0 == strcmp(swptr, "end"))
                 gotEnd = true;
-            else
-            {
+            else {
                 fprintf (stderr, "hex: Unknown option (%s).\n", argv[argi]);
                 return 0;
             }
 
-            if (gotStart || gotEnd)
-            {
-                if (argc <= argi+1)
-                {   fprintf (stderr, "hex: No argument given to %s option.\n", argv[argi]);
+            if (gotStart || gotEnd) {
+                if (argc <= argi+1) {
+                    fprintf (stderr, "hex: No argument given to %s option.\n", argv[argi]);
                     return 0;
                 }
 
@@ -248,36 +240,32 @@ short ProcessArgs (int argc, char *argv[])
 
             argv[argi][0] = 0; // Zap the switch argument.
 
-        }
-        else
-        {
+        } else {
+
             // Handle single-character switch type
-            do
-            {
-                switch (*swptr)
-                {
+            do {
+                switch (*swptr) {
                     case 'b':   grouping = GroupType::Byte;  break;
                     case 'w':   grouping = GroupType::Word;  break;
                     case 'l':   grouping = GroupType::Long;  break;
                     case 'q':   grouping = GroupType::Quad;  break;
                     case 'o':   grouping = GroupType::Oct;   break;
 
-                    case 'c':
-                    {   compact  = true;
+                    case 'c': {
+                        compact  = true;
                         break;
                     }
 
-                    case 'e':
-                    {   char *ptr = swptr+1;
+                    case 'e': {
+                        char *ptr = swptr+1;
 
-                        if (!*ptr)
-                        {   argv[argi][0] = 0;
+                        if (!*ptr) {
+                            argv[argi][0] = 0;
                             ptr = argv[++argi];
                         }
 
-                        if (argc <= argi)
-                        {   fprint (stderr,
-                                    "hex: No argument given to -e option.\n");
+                        if (argc <= argi) {
+                            fprint (stderr, "hex: No argument given to -e option.\n");
                             return 0;
                         }
 
@@ -286,16 +274,16 @@ short ProcessArgs (int argc, char *argv[])
                         break;
                     }
 
-                    case 's':
-                    {   auto ptr = swptr+1;
+                    case 's': {
+                        auto ptr = swptr+1;
 
-                        if (!*ptr)
-                        {   argv[argi][0] = 0;
+                        if (!*ptr) {
+                            argv[argi][0] = 0;
                             ptr = argv[++argi];
                         }
 
-                        if (argc <= argi)
-                        {   fprint (stderr, "hex: No argument given to -s option.\n");
+                        if (argc <= argi) {
+                            fprint (stderr, "hex: No argument given to -s option.\n");
                             return 0;
                         }
 
@@ -325,8 +313,8 @@ short ProcessArgs (int argc, char *argv[])
 
 //**************************************************************************************************
 
-void Dump (FILE *file, long dataStart, long dataEnd)
-{
+void Dump (FILE *file, long dataStart, long dataEnd) {
+
     // This procedure dumps a file to standard output.
 
     if ((dataEnd > 0) && (dataStart > 0) && (dataEnd <= dataStart))
@@ -339,11 +327,9 @@ void Dump (FILE *file, long dataStart, long dataEnd)
 
     if (dataStart < 0)
         dataStart = 0;
-    else
-    {   if (0 != fseek (file, dataStart, 0))
-        {   fprint (stderr, "hex: fseek to start position failed.\n");
-            return;
-        }
+    else if (0 != fseek (file, dataStart, 0)) {
+        fprint (stderr, "hex: fseek to start position failed.\n");
+        return;
     }
 
     // While a non-zero number of bytes are read in...
@@ -352,10 +338,9 @@ void Dump (FILE *file, long dataStart, long dataEnd)
     char   priorBuff[16];   // Prior Input Buffer
     size_t nbytes;          // Number of Bytes Read In
 
-    while ((0 != (nbytes = fread (buff, 1, 0x10, file))) || redblock)
-    {
-        if (dataEnd > 0)
-        {   if ((dataEnd <= addr) && !redblock) break;
+    while ((0 != (nbytes = fread (buff, 1, 0x10, file))) || redblock) {
+        if (dataEnd > 0) {
+            if ((dataEnd <= addr) && !redblock) break;
             if (dataEnd < (addr+0x10))
                 nbytes = dataEnd - addr + 1;
         }
@@ -366,12 +351,12 @@ void Dump (FILE *file, long dataStart, long dataEnd)
 
         if (  compact && (addr != dataStart) && (nbytes == 0x10)
            && (0 == memcmp (priorBuff, buff, sizeof(buff)))
-           )
-        {
+           ) {
+
             // Print the redundant line marker, but only once per block.
 
-            if (!redblock)
-            {   fputs ("====\n", stdout);
+            if (!redblock) {
+                fputs ("====\n", stdout);
                 redblock = true;
             }
             addr += nbytes;
@@ -384,8 +369,8 @@ void Dump (FILE *file, long dataStart, long dataEnd)
         // the number of bytes in the last buffer is 0x10. We also decrement the address to adjust
         // for having skipped past the last block.
 
-        if (!nbytes && redblock)
-        {   nbytes  = 0x10;
+        if (!nbytes && redblock) {
+            nbytes  = 0x10;
             addr   -= 0x10;
         }
 
@@ -405,8 +390,8 @@ void Dump (FILE *file, long dataStart, long dataEnd)
 
         auto t = 0;    // lineTemplate Character Index
 
-        for (t=0;  t < nbytes;  ++t)
-        {   lineTemplate [locs[t]  ] = hexDigits [ (unsigned char)(buff[t]) >> 4  ];
+        for (t=0;  t < nbytes;  ++t) {
+            lineTemplate [locs[t]  ] = hexDigits [ (unsigned char)(buff[t]) >> 4  ];
             lineTemplate [locs[t]+1] = hexDigits [ (unsigned char)(buff[t]) & 0xF ];
         }
 
