@@ -11,26 +11,28 @@
 #include <locale>
 
 
-static char *programVersion = "v1.0.1";
+static char *programVersion = "v1.1.0";
 
 static char usage[] = R"(
-usage:  hex [-bwlqo] [-c] [-s <start>] [-e <end>] [file] ... [file]
+usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q] [--octword|-o]
+            [--compact|-c] [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
 source: https://github.com/hollasch/hex
 
     This tool dumps the contents of a file in hexadecimal and ascii. If no
     filenames are supplied, hex reads from the standard input stream.
 
-    -b  Display output grouped by bytes.
-    -w  Display output grouped by words (16-bits).
-    -l  Display output grouped by longwords (32-bits).
-    -q  Display output grouped by quadwords (64-bits).
-    -o  Display output grouped by octwords (128-bits).
+    --byte,-b      Display output grouped by bytes
+    --word,-w      Display output grouped by words (16-bits)
+    --longword,-l  Display output grouped by longwords (32-bits)
+    --quadword,-q  Display output grouped by quadwords (64-bits)
+    --octword,-o   Display output grouped by octwords (128-bits)
 
-    -c  Compact duplicate lines. Blocks of identical data are represented
+    --compact, -c
+        Compact duplicate lines. Blocks of identical data are represented
         by the first line of data followed by a single line of \"====\".
 
-    -s <address>
-    -e <address>
+    --start <address>, -s <address>
+    --end <address>, -e <address>
         Start/end the dump at the given location. To specify octal, prefix
         with '0'. To specify hexadecimal, prefix with '0x'. For example,
         200 = 0310 = 0xc8.
@@ -148,7 +150,7 @@ int main (int argc, char *argv[])
             FILE *file;     // File Handle
 
             if (0 != fopen_s(&file, fname,"rb"))
-                fprintf (stderr, "hex:  Couldn't open \"%s\".\n", fname);
+                fprintf (stderr, "hex: Couldn't open \"%s\".\n", fname);
             else
             {   if (fileCount > 1) printf ("\n%s:\n", fname);
                 Dump (file, dataStart, dataEnd);
@@ -198,70 +200,122 @@ short ProcessArgs (int argc, char *argv[])
 
         swptr = argv[argi] + 1;
 
-        // Handle switch type
-        do
-        {   switch (*swptr)
+        if (*swptr == '-')
+        {
+            ++swptr;
+
+            bool gotStart = false;
+            bool gotEnd = false;
+
+            if (0 == strcmp(swptr, "byte"))
+                grouping = GroupType::Byte;
+            else if (0 == strcmp(swptr, "word"))
+                grouping = GroupType::Word;
+            else if (0 == strcmp(swptr, "longword"))
+                grouping = GroupType::Long;
+            else if (0 == strcmp(swptr, "quadword"))
+                grouping = GroupType::Quad;
+            else if (0 == strcmp(swptr, "octword"))
+                grouping = GroupType::Oct;
+            else if (0 == strcmp(swptr, "compact"))
+                compact = true;
+            else if (0 == strcmp(swptr, "start"))
+                gotStart = true;
+            else if (0 == strcmp(swptr, "end"))
+                gotEnd = true;
+            else
             {
-                case 'b':   grouping = GroupType::Byte;  break;
-                case 'l':   grouping = GroupType::Long;  break;
-                case 'w':   grouping = GroupType::Word;  break;
-                case 'q':   grouping = GroupType::Quad;  break;
-                case 'o':   grouping = GroupType::Oct;   break;
-
-                case 'c':
-                {   compact  = true;
-                    break;
-                }
-
-                case 'e':
-                {   char *ptr = swptr+1;
-
-                    if (!*ptr)
-                    {   argv[argi][0] = 0;
-                        ptr = argv[++argi];
-                    }
-
-                    if (argc <= argi)
-                    {   fprint (stderr,
-                                "hex:  No argument given to -e option.\n");
-                        return 0;
-                    }
-
-                    dataEnd = strtoul (ptr, nullptr, 0);
-                    swptr = 0;
-                    break;
-                }
-
-                case 's':
-                {   auto ptr = swptr+1;
-
-                    if (!*ptr)
-                    {   argv[argi][0] = 0;
-                        ptr = argv[++argi];
-                    }
-
-                    if (argc <= argi)
-                    {   fprint (stderr,
-                                "hex:  No argument given to -s option.\n");
-                        return 0;
-                    }
-
-                    dataStart = strtoul (ptr, nullptr, 0);
-                    swptr = 0;
-                    break;
-                }
-
-                default:
-                    fprintf (stderr, "hex:  Unknown option (%c).\n", *swptr);
-                    return 0;
+                fprintf (stderr, "hex: Unknown option (%s).\n", argv[argi]);
+                return 0;
             }
 
-            if (swptr)
-                ++swptr;
+            if (gotStart || gotEnd)
+            {
+                if (argc <= argi+1)
+                {   fprintf (stderr, "hex: No argument given to %s option.\n", argv[argi]);
+                    return 0;
+                }
 
-        } while (swptr && *swptr);
+                argv[argi++][0] = 0; // Zap the switch argument.
 
-        argv[argi][0] = 0;
+                auto val = strtoul (argv[argi], nullptr, 0);
+                if (gotStart)
+                    dataStart = val;
+                else
+                    dataEnd = val;
+            }
+
+            argv[argi][0] = 0; // Zap the switch argument.
+
+        }
+        else
+        {
+            // Handle single-character switch type
+            do
+            {
+                switch (*swptr)
+                {
+                    case 'b':   grouping = GroupType::Byte;  break;
+                    case 'w':   grouping = GroupType::Word;  break;
+                    case 'l':   grouping = GroupType::Long;  break;
+                    case 'q':   grouping = GroupType::Quad;  break;
+                    case 'o':   grouping = GroupType::Oct;   break;
+
+                    case 'c':
+                    {   compact  = true;
+                        break;
+                    }
+
+                    case 'e':
+                    {   char *ptr = swptr+1;
+
+                        if (!*ptr)
+                        {   argv[argi][0] = 0;
+                            ptr = argv[++argi];
+                        }
+
+                        if (argc <= argi)
+                        {   fprint (stderr,
+                                    "hex: No argument given to -e option.\n");
+                            return 0;
+                        }
+
+                        dataEnd = strtoul (ptr, nullptr, 0);
+                        swptr = 0;
+                        break;
+                    }
+
+                    case 's':
+                    {   auto ptr = swptr+1;
+
+                        if (!*ptr)
+                        {   argv[argi][0] = 0;
+                            ptr = argv[++argi];
+                        }
+
+                        if (argc <= argi)
+                        {   fprint (stderr, "hex: No argument given to -s option.\n");
+                            return 0;
+                        }
+
+                        dataStart = strtoul (ptr, nullptr, 0);
+                        swptr = 0;
+                        break;
+                    }
+
+                    default:
+                        fprintf (stderr, "hex: Unknown option (%c).\n", *swptr);
+                        return 0;
+                }
+
+                if (swptr)
+                    ++swptr;
+
+            } while (swptr && *swptr);
+
+            argv[argi][0] = 0;
+        }
+
     }
 
     return 1;
@@ -286,7 +340,7 @@ void Dump (FILE *file, long dataStart, long dataEnd)
         dataStart = 0;
     else
     {   if (0 != fseek (file, dataStart, 0))
-        {   fprint (stderr, "hex:  fseek to start position failed.\n");
+        {   fprint (stderr, "hex: fseek to start position failed.\n");
             return;
         }
     }
