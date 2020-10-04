@@ -11,13 +11,13 @@
 #include <locale>
 
 
-static auto programVersion = "v1.1.0";
+static auto programVersion = "hex v1.1.0  2020-10-03  https://github.com/hollasch/hex\n";
 
 static auto usage = R"(
+hex:    dumps the contents of a file in hex and ASCII
 usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
             [--octword|-o] [--compact|-c]
             [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
-source: https://github.com/hollasch/hex
 
     This tool dumps the contents of a file in hexadecimal and ascii. If no
     filenames are supplied, hex reads from the standard input stream.
@@ -67,10 +67,13 @@ inline int fprint (FILE *stream, const char *string) {
 
 
 void PrintHelp() {
-    print ("\nhex ");
+    print ("");
     print (programVersion);
-    print (" - dumps the contents of a file in hex and ASCII.");
     print (usage);
+}
+
+void PrintVersion() {
+    print (programVersion);
 }
 
 
@@ -127,7 +130,10 @@ bool ProcessArgs (ProgramParams& params, int argc, char *argv[]) {
                 gotStart = true;
             else if (0 == strcmp(swptr, "end"))
                 gotEnd = true;
-            else {
+            else if (0 == strcmp(swptr, "version")) {
+                PrintVersion();
+                exit(0);
+            } else {
                 fprintf (stderr, "hex: Unknown option (%s).\n", argv[argi]);
                 return false;
             }
