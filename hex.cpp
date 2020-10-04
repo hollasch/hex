@@ -106,13 +106,8 @@ int main (int argc, char *argv[]) {
 
     // Process the command-line arguments.
 
-    if (!ProcessArgs (argc, argv)) {
-        fprint (stderr, "hex ");
-        fprint (stderr, programVersion);
-        fprint (stderr, " - dumps the contents of a file in hex and ASCII.");
-        fprint (stderr, usage);
+    if (!ProcessArgs (argc, argv))
         exit (0);
-    }
 
     // Set up the output buffer according to the grouping type.
 
@@ -162,6 +157,15 @@ int main (int argc, char *argv[]) {
 
 //**************************************************************************************************
 
+void PrintHelp() {
+    print ("\nhex ");
+    print (programVersion);
+    print (" - dumps the contents of a file in hex and ASCII.");
+    print (usage);
+}
+
+//**************************************************************************************************
+
 short ProcessArgs (int argc, char *argv[]) {
 
     // This routine processes the command-line arguments. If all goes well, the function returns 1,
@@ -175,14 +179,11 @@ short ProcessArgs (int argc, char *argv[]) {
         // First check to see if the user is prompting for information. Note that I also check
         // forward-slash options for PC folks.
 
-        if (  (0 == strcmp(argv[argi], "-?"))
-           || (0 == strcmp(argv[argi], "/?"))
-           || (0 == strcmp(argv[argi], "-h"))
-           || (0 == strcmp(argv[argi], "/h"))
-           || (0 == strcmp(argv[argi], "-help"))
-           || (0 == strcmp(argv[argi], "/help"))
+        if (  (0 == strcmp(argv[argi], "/?")) || (0 == strcmp(argv[argi], "-?"))
+           || (0 == strcmp(argv[argi], "-h")) || (0 == strcmp(argv[argi], "--help"))
            )
         {
+            PrintHelp();
             return 0;
         }
 
@@ -351,8 +352,8 @@ void Dump (FILE *file, long dataStart, long dataEnd) {
 
         if (  compact && (addr != dataStart) && (nbytes == 0x10)
            && (0 == memcmp (priorBuff, buff, sizeof(buff)))
-           ) {
-
+           )
+        {
             // Print the redundant line marker, but only once per block.
 
             if (!redblock) {
