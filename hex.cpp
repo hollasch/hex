@@ -15,8 +15,8 @@ static auto programVersion = "hex v1.1.1-wip | 2021-04-24 | https://github.com/h
 
 static auto usage = R"(
 hex  : dumps the contents of a file in hex and ASCII
-usage: hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q] [--octword|-o] [--compact|-c]
-           [<--start|-s> <start>] [<--end|-e> <end>] [--help|-h] [--version]
+usage: hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q] [--octword|-o]
+           [<--start|-s> <start>] [<--end|-e> <end>] [--compact|-c] [--help|-h] [--version]
            [file] ... [file]
 
     This tool dumps the contents of a file in hexadecimal and ascii. If no filenames are supplied,
@@ -72,8 +72,9 @@ inline int fprint (FILE *stream, const char *string) {
 
 void PrintHelp() {
     print ("");
-    print (programVersion);
     print (usage);
+    print ("\n");
+    print (programVersion);
 }
 
 void PrintVersion() {
