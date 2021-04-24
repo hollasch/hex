@@ -11,16 +11,16 @@
 #include <locale>
 
 
-static auto programVersion = "hex v1.1.0  2020-10-03  https://github.com/hollasch/hex\n";
+static auto programVersion = "hex v1.1.1-wip | 2021-04-24 | https://github.com/hollasch/hex\n";
 
 static auto usage = R"(
-hex:    dumps the contents of a file in hex and ASCII
-usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
-            [--octword|-o] [--compact|-c]
-            [<-s|--start> <start>] [<--end|-e> <end>] [file] ... [file]
+hex  : dumps the contents of a file in hex and ASCII
+usage: hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q] [--octword|-o] [--compact|-c]
+           [<--start|-s> <start>] [<--end|-e> <end>] [--help|-h] [--version]
+           [file] ... [file]
 
-    This tool dumps the contents of a file in hexadecimal and ascii. If no
-    filenames are supplied, hex reads from the standard input stream.
+    This tool dumps the contents of a file in hexadecimal and ascii. If no filenames are supplied,
+    hex reads from the standard input stream.
 
     --byte,-b      Display output grouped by bytes
     --word,-w      Display output grouped by words (16-bits)
@@ -29,14 +29,16 @@ usage:  hex [--byte|-b] [--word|-w] [--longword|-l] [--quadword|-q]
     --octword,-o   Display output grouped by octwords (128-bits)
 
     --compact, -c
-        Compact duplicate lines. Blocks of identical data are represented by the
-        first line of data followed by a single line of \"====\".
+        Compact duplicate lines. Blocks of identical data are represented by the first line of data
+        followed by a single line of \"====\".
 
     --start <address>, -s <address>
     --end <address>, -e <address>
-        Start/end the dump at the given location. To specify octal, prefix with
-        '0'. To specify hexadecimal, prefix with '0x'. For example, 200 = 0310 =
-        0xc8.
+        Start/end the dump at the given location. To specify octal, prefix with '0'. To specify
+        hexadecimal, prefix with '0x'. For example, 200 = 0310 = 0xc8.
+
+    --help, -h
+        Print help information
 
     --version
         Display version information
