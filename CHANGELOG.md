@@ -1,25 +1,39 @@
 hex - Change Log
 ====================================================================================================
 
-v1.1.0  (2020-10-03)
----------------------
-  - Delete: options `/h` and `-help`
-  - Add: long option forms `--help`, `--byte`, `--word`, `--longword`, `--quadword`, `--octword`,
+# v1.1.1 (In Progress)
+
+### Changed
+  - Tweaked format of version line
+
+
+----------------------------------------------------------------------------------------------------
+# v1.1.0  (2020-10-03)
+
+### Deleted
+  - Removed options `/h` and `-help`
+
+### Added
+  - Added long option forms `--help`, `--byte`, `--word`, `--longword`, `--quadword`, `--octword`,
     `--compact`, `--start`, and `--end`
-  - Add: new option `--version`.
-  - Change: Various refactorings
-  - Change: converted project to CMake
+  - Added new option `--version`
+
+### Changed
+  - Various refactorings
+  - Converted project to CMake
 
 
-v1.0.1  (2018-06-24)
----------------------
+----------------------------------------------------------------------------------------------------
+# v1.0.1  (2018-06-24)
+
 ### Changed
   - Retarget Windows SDK 10.0.17134.0
   - Tweaked help text
 
 
-v1.0.0  (2016-10-16)
----------------------
+----------------------------------------------------------------------------------------------------
+# v1.0.0  (2016-10-16)
+
 First formal release
 
   - Supports grouping options -b, -w, -l, -q and -o.

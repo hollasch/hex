@@ -11,7 +11,7 @@
 #include <locale>
 
 
-static auto programVersion = "hex v1.1.1-wip | 2021-04-24 | https://github.com/hollasch/hex\n";
+static auto programVersion = "hex 1.1.1-alpha.2 | 2021-04-24 | https://github.com/hollasch/hex\n";
 
 static auto usage = R"(
 hex  : dumps the contents of a file in hex and ASCII
