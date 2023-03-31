@@ -94,12 +94,12 @@ This will build the debug version. To build the release version, run
 You will find the built executable in `build/Debug` or `build/Release`.
 
 
-Installation
--------------
-`hex.exe` is a standalone executable. Copy it to any location on your command and use as-is. There
-is no other installation.
+Installation (Windows)
+-----------------------
+`hex.exe` is a standalone executable. Copy it to any location on your command path and use as-is.
+No other installation steps are required.
 
 
 ----
-Steve Hollasch, steve@hollasch.net
+Steve Hollasch (steve@hollasch.net)<br>
 https://github.com/hollasch/hex
